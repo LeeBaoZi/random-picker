@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import Taro from '@tarojs/taro'
-import { View, Canvas   } from '@tarojs/components'
+import { View, Canvas  } from '@tarojs/components'
 import './index.less'
 
 export default class Index extends Component {
@@ -9,12 +9,12 @@ export default class Index extends Component {
     super(props);
     this.state = {
       awards: [
-        {id: 1, name: '一等奖', level: '1', color:"#FFC200"},
-        {id: 2, name: '二等奖', level: '2', color:"#FFE122"},
-        {id: 3, name: '三等奖', level: '3', color:"#FFC200"},
-        {id: 4, name: '四等奖', level: '4', color:"#FFE122"},
-        {id: 5, name: '五等奖', level: '5', color:"#FFC200"},
-        {id: 6, name: '六等奖', level: '6', color:"#FFE122"},
+        {id: 1, name: 'First', level: '1', color:"#D12229"},
+        {id: 2, name: '二等奖', level: '2', color:"#F68A1E"},
+        {id: 3, name: '三等奖', level: '3', color:"#FDE01A"},
+        {id: 4, name: '四等奖', level: '4', color:"#007940"},
+        {id: 5, name: '五等奖', level: '5', color:"#24408E"},
+        {id: 6, name: '六等奖', level: '6', color:"#732982"},
       ],//大转盘的奖品列表
       // animation: true,
       // fileRootPath: "",//"http://co.dev.touty.io"
@@ -26,17 +26,28 @@ export default class Index extends Component {
     }
   }
 
-  componentWillMount () { 
-    Taro.getSystemInfo({
-      success: (res) => {
-        this.setState({screenWidth: res.windowWidth - 50})
-        console.log(res.windowWidth)
-      }
-    })
+  componentWillMount () {
+    if (process.env.TARO_ENV === 'weapp') {
+      Taro.getSystemInfo({
+        success: (res) => {
+          this.setState({screenWidth: res.windowWidth - 50})
+          console.log(res.windowWidth)
+        }
+      })
+    }
   }
 
   componentDidMount () { 
-    this.onLoadPage(this.state.awards, this.state.startRadian);
+    if (process.env.TARO_ENV === 'weapp') this.onLoadPage(this.state.awards, this.state.startRadian);
+    else if (process.env.TARO_ENV === 'h5') {
+      Taro.getSystemInfo({
+        success: (res) => {
+          this.setState({screenWidth: res.windowWidth - 50})
+          this.onLoadPage(this.state.awards, this.state.startRadian);
+          console.log(res.windowWidth)
+        }
+      })
+    }
   }
 
   componentWillUnmount () { }
@@ -45,8 +56,9 @@ export default class Index extends Component {
 
   componentDidHide () { }
 
-  onLoadPage(awards, startRadian) {
+  onLoadPage(awards, startRadianTemp) {
     // let {startRadian} = this.state;
+    let startRadian = startRadianTemp + 90 * Math.PI / 180
     let context
     // 获取canvas的上下文,context含有各种api用来操作canvas
     if (process.env.TARO_ENV === 'weapp') {
@@ -87,18 +99,18 @@ export default class Index extends Component {
       // 开始绘制文字
       context.save();
       //设置文字颜色
-      context.fillStyle = '#f00';
+      context.fillStyle = '#FFFFFF';
       //设置文字样式
       context.font = "18px Arial";
       // 改变canvas原点的位置,简单来说,translate到哪个坐标点,那么那个坐标点就将变为坐标(0, 0)
       context.translate(
-        0 + Math.cos(startRadian + RadianGap / 2) * (width - 10),
-        width + Math.sin(startRadian + RadianGap / 2) * (width - 10)
+        0 + Math.cos(startRadian + RadianGap / 2) * (width - 15),
+        width + Math.sin(startRadian + RadianGap / 2) * (width - 15)
       )
       // 旋转角度,这个旋转是相对于原点进行旋转的.
       context.rotate(startRadian + RadianGap / 2 + Math.PI / 2);
       // 这里就是根据获取的各行的文字进行绘制,maxLineWidth取70,相当与一行最多展示5个文字
-      this.getLineTextList(context, awards[i].name, 70).forEach((line, index) => {
+      this.getLineTextList(context, awards[i].name, 120).forEach((line, index) => {
         // 绘制文字的方法,三个参数分别带:要绘制的文字,开始绘制的x坐标,开始绘制的y坐标
         context.fillText(line, -context.measureText(line).width / 2, ++index * 25)
       });
@@ -115,7 +127,7 @@ export default class Index extends Component {
     // 设置填充转盘用的颜色,fill是填充而不是绘制
     context.fillStyle = '#fff';
     // 绘制一个圆,有六个参数,分别表示:圆心的x坐标,圆心的y坐标,圆的半径,开始绘制的角度,结束的角度,绘制方向(false表示顺时针)
-    context.arc(0, width, 70, startRadian, Math.PI * 2 + startRadian, false);
+    context.arc(0, width, 120, startRadian, Math.PI * 2 + startRadian, false);
     // 将设置的颜色填充到圆中,这里不用closePath是因为closePath对fill无效.
     context.fill();
     // 将画布的状态恢复到上一次save()时的状态
@@ -208,7 +220,17 @@ export default class Index extends Component {
           <Canvas className='item' id='wheelcanvas' canvas-id='wheelcanvas'
             style={{ width: this.state.screenWidth * 2 + 'px',height: this.state.screenWidth * 2 + 'px' }}
           />
-          {/* <Image onClick={this.draw.bind(this)} className='pointer' src='https://wp.touty.io/api/file/5d0c51c02ab79c000897ecaa.image' /> */}
+          <View onClick={this.draw.bind(this)} className='pointer start start-weapp' >
+            {/* <svg viewBox='0 0 100 100'>
+              <path d='M 0,50 a 50,50 0 1, 1 0, 1 z' id='circle1'></path>
+              <text>
+                <textPath xlinkHref='#circle1'>
+                  START&nbsp;&nbsp;START&nbsp;&nbsp;START
+                </textPath>
+              </text>
+            </svg> */}
+            <View className='start-weapp-svg'></View>
+          </View>
         </View>
       )
     } else if (process.env.TARO_ENV === 'h5') {
@@ -216,13 +238,33 @@ export default class Index extends Component {
       wheel = (
         <View className='wheel'>
           <canvas className='item' id='wheelcanvas' width={this.state.screenWidth * 2} height={this.state.screenWidth * 2} />
-          {/* <img onClick={this.draw.bind(this)} className='pointer' src='https://wp.touty.io/api/file/5d0c51c02ab79c000897ecaa.image' /> */}
+          <View onClick={this.draw.bind(this)} className='pointer start' >
+            <svg viewBox='0 0 100 100'>
+              <path d='M 0,50 a 50,50 0 1, 1 0, 1 z' id='circle1'></path>
+              <text>
+                <textPath xlinkHref='#circle1'>
+                  START&nbsp;&nbsp;START&nbsp;&nbsp;START
+                </textPath>
+              </text>
+            </svg>
+          </View>
         </View>
       )
     }
     return (
       <View className='index'>
        { wheel }
+       <View className='chosen'>Chosen</View>
+       <View className='update-button'>
+         <View class='update-title'>
+          <View class='text'>Click Here To Input Your Data</View>
+         </View>
+         <View class='update-circle'>
+           <View className='interior-circle circle'></View>
+           <View className='external-circle circle'></View>
+           <View className='circle-click'>Click</View>
+         </View>
+       </View>
       </View>
     )
   }
