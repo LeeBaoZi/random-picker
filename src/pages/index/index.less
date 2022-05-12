@@ -1,17 +1,114 @@
 .index{
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .wheel{
-  height: 100%;
-  .pointer{
+  .start{
     position: absolute;
-    width: 31%;
-    height: 31%;
-    left: 34.7%;
-    top: 30.3%;
-    cursor: pointer;
+    background-color: antiquewhite;
+    height: 220PX;
+    width: 220PX;
+    border-radius: 50%;
+    top: 50%;
+    left: 0;
+    transform: translate(-50%,-55%);
+    path{ 
+      fill: none; 
+    }
+    svg{
+      display: block;
+      overflow: visible;
+    }
+    &-weapp{
+      transform: translate(-50%,-50%);
+      &-svg{
+        height: 100%;
+        width: 100%;
+        display: block;
+        background-size: contain;
+        overflow: visible;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' view-box='0 0 100 100'%3E %3Cpath d='M 0,50 a 50,50 0 1, 1 0, 1 z' id='circle1'%3E%3C/path%3E %3Ctext%3E %3CtextPath xlink:href='%23circle1'%3E START&nbsp;&nbsp;START&nbsp;&nbsp;START %3C/textPath%3E %3C/text%3E %3C/svg%3E");
+      }
+    }
   }
   img{
     max-width: 100%;
+  }
+}
+.pointer{
+  cursor: pointer;
+}
+.chosen{
+  position: absolute;
+  right: 0;
+}
+.update-button{
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 32px;
+  bottom: 0;
+  .update-title{
+    position: relative;
+    min-width: ~ 'calc(100% - 100PX)';
+    .text{
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  }
+}
+
+// 波纹
+.update-circle{
+  position: relative;
+  width: 100PX;
+  height: 100PX;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  .circle{
+    position: absolute;
+    bottom: -50%;
+    right: -50%;
+    width: 130PX;
+    height: 130PX;
+    border: 2px solid #D12229;
+    border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+    transition: 0.5s;
+    animation: animate 6s linear infinite;
+  }
+  @keyframes animate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes animate2 {
+    0% {
+      transform: rotate(360deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+  .interior-circle{
+    animation: animate 6s linear infinite;
+  }
+  .interior-circle{
+    border: 2px solid #732982;
+    animation: animate2 10s linear infinite;
+  }
+  .circle-click{
+    position: absolute;
+    bottom: 0;
+    font-size: 24PX;
+    right: 10PX;
   }
 }
