@@ -221,15 +221,7 @@ export default class Index extends Component {
             style={{ width: this.state.screenWidth * 2 + 'px',height: this.state.screenWidth * 2 + 'px' }}
           />
           <View onClick={this.draw.bind(this)} className='pointer start start-weapp' >
-            {/* <svg viewBox='0 0 100 100'>
-              <path d='M 0,50 a 50,50 0 1, 1 0, 1 z' id='circle1'></path>
-              <text>
-                <textPath xlinkHref='#circle1'>
-                  START&nbsp;&nbsp;START&nbsp;&nbsp;START
-                </textPath>
-              </text>
-            </svg> */}
-            <View className='start-weapp-svg'></View>
+            <View class='start-png'></View>
           </View>
         </View>
       )
