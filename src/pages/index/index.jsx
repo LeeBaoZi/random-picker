@@ -22,7 +22,7 @@ export default class Index extends Component {
       canBeClick: true,//判断抽奖有没有结束
       // canvas: '',
       // context: '',
-      screenWidth: ''
+      screenWidth: '',
     }
   }
 
@@ -63,7 +63,6 @@ export default class Index extends Component {
     // 获取canvas的上下文,context含有各种api用来操作canvas
     if (process.env.TARO_ENV === 'weapp') {
       context = Taro.createCanvasContext('wheelcanvas', this.$scope);
-      console.log(context)
     } else if (process.env.TARO_ENV === 'h5') {
       let canvas = document.getElementById('wheelcanvas');
       context = canvas.getContext('2d');
@@ -211,7 +210,35 @@ export default class Index extends Component {
     return distance + Math.PI * 10;
   }
 
+  // 打开数据输入框
+  openUpdate () {
+    Taro.navigateTo({
+      url: '/pages/index/wheel-input',
+    })
+  }
+
+  // 自定义导航
+  customTopBar () {
+    // 导航高度
+    // 状态栏高度
+    const statusBarHeight = Taro.getStorageSync('statusBarHeight') + 'px';
+    // 导航栏高度
+    const navigationBarHeight = Taro.getStorageSync('navigationBarHeight') + 'px';
+    // 胶囊按钮高度
+    // const menuButtonHeight = Taro.getStorageSync('menuButtonHeight') + 'px';
+    // 导航栏和状态栏高度
+    // const navigationBarAndStatusBarHeight = Taro.getStorageSync('statusBarHeight') + Taro.getStorageSync('navigationBarHeight') + 'px'
+    const topBar = (
+      <View className='top-bar' style={{paddingTop: statusBarHeight}}>
+        <View style={{height: navigationBarHeight}}>The Item</View>
+      </View>
+    )
+    return topBar
+  }
+
   render () {
+    const topBar = this.customTopBar()
+
     let wheel
     if (process.env.TARO_ENV === 'weapp') {
       console.log('weapp')
@@ -245,6 +272,7 @@ export default class Index extends Component {
     }
     return (
       <View className='index'>
+       { topBar }
        { wheel }
        <View className='chosen'>Chosen</View>
        <View className='update-button'>
@@ -254,7 +282,7 @@ export default class Index extends Component {
          <View class='update-circle'>
            <View className='interior-circle circle'></View>
            <View className='external-circle circle'></View>
-           <View className='circle-click'>Click</View>
+           <View className='circle-click' onClick={this.openUpdate}>Click</View>
          </View>
        </View>
       </View>
