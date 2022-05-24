@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import Taro from '@tarojs/taro'
-import { View, Canvas  } from '@tarojs/components'
+import { View, Canvas, CoverView, CoverImage  } from '@tarojs/components'
 import './index.less'
 
 export default class Index extends Component {
@@ -8,14 +8,7 @@ export default class Index extends Component {
   constructor(props){
     super(props);
     this.state = {
-      awards: [
-        {id: 1, name: 'First', level: '1', color:"#D12229"},
-        {id: 2, name: '二等奖', level: '2', color:"#F68A1E"},
-        {id: 3, name: '三等奖', level: '3', color:"#FDE01A"},
-        {id: 4, name: '四等奖', level: '4', color:"#007940"},
-        {id: 5, name: '五等奖', level: '5', color:"#24408E"},
-        {id: 6, name: '六等奖', level: '6', color:"#732982"},
-      ],//大转盘的奖品列表
+      awards: [],//大转盘的奖品列表
       // animation: true,
       // fileRootPath: "",//"http://co.dev.touty.io"
       startRadian: -90 * Math.PI / 180,//大转盘的开始弧度(canvas绘制圆从水平方向开始，所以这里调整为垂直方向) 弧度计算公式：角度*Math.PI/180
@@ -27,6 +20,21 @@ export default class Index extends Component {
   }
 
   componentWillMount () {
+    let awardsStorage = []
+    // wheel
+    if (Taro.getStorageSync('awardsStorage')) awardsStorage = Taro.getStorageSync('awardsStorage')
+    else {
+      awardsStorage = [
+        {id: 1, name: 'Legendary', level: '1', color:"#D12229"},
+        {id: 2, name: 'Gorgeous', level: '2', color:"#F68A1E"},
+        {id: 3, name: 'Beautiful', level: '3', color:"#FDE01A"},
+        {id: 4, name: 'Tantalizing', level: '4', color:"#007940"},
+        {id: 5, name: 'Quality', level: '5', color:"#24408E"},
+        {id: 6, name: 'Incredible', level: '6', color:"#732982"},
+      ]
+      Taro.setStorageSync('awardsStorage', awardsStorage)
+    }
+    this.setState({awards: awardsStorage})
     if (process.env.TARO_ENV === 'weapp') {
       Taro.getSystemInfo({
         success: (res) => {
@@ -118,17 +126,19 @@ export default class Index extends Component {
       startRadian += RadianGap;
       endRadian += RadianGap;
     }
-    //下面是画中间的小圆
-    context.save();
-    // 新建一个路径,画笔的位置回到默认的坐标(0,0)的位置
-    // 保证了当前的绘制不会影响到之前的绘制
-    context.beginPath();
-    // 设置填充转盘用的颜色,fill是填充而不是绘制
-    context.fillStyle = '#fff';
-    // 绘制一个圆,有六个参数,分别表示:圆心的x坐标,圆心的y坐标,圆的半径,开始绘制的角度,结束的角度,绘制方向(false表示顺时针)
-    context.arc(0, width, 120, startRadian, Math.PI * 2 + startRadian, false);
-    // 将设置的颜色填充到圆中,这里不用closePath是因为closePath对fill无效.
-    context.fill();
+    if (process.env.TARO_ENV === 'h5') {
+      //下面是画中间的小圆
+      context.save();
+      // 新建一个路径,画笔的位置回到默认的坐标(0,0)的位置
+      // 保证了当前的绘制不会影响到之前的绘制
+      context.beginPath();
+      // 设置填充转盘用的颜色,fill是填充而不是绘制
+      context.fillStyle = '#fff';
+      // 绘制一个圆,有六个参数,分别表示:圆心的x坐标,圆心的y坐标,圆的半径,开始绘制的角度,结束的角度,绘制方向(false表示顺时针)
+      context.arc(0, width, 120, startRadian, Math.PI * 2 + startRadian, false);
+      // 将设置的颜色填充到圆中,这里不用closePath是因为closePath对fill无效.
+      context.fill();
+    }
     // 将画布的状态恢复到上一次save()时的状态
     context.restore();
     if (process.env.TARO_ENV === 'weapp') {
@@ -223,14 +233,14 @@ export default class Index extends Component {
     // 状态栏高度
     const statusBarHeight = Taro.getStorageSync('statusBarHeight') + 'px';
     // 导航栏高度
-    const navigationBarHeight = Taro.getStorageSync('navigationBarHeight') + 'px';
+    // const navigationBarHeight = Taro.getStorageSync('navigationBarHeight') + 'px';
     // 胶囊按钮高度
     // const menuButtonHeight = Taro.getStorageSync('menuButtonHeight') + 'px';
     // 导航栏和状态栏高度
     // const navigationBarAndStatusBarHeight = Taro.getStorageSync('statusBarHeight') + Taro.getStorageSync('navigationBarHeight') + 'px'
     const topBar = (
       <View className='top-bar' style={{paddingTop: statusBarHeight}}>
-        <View style={{height: navigationBarHeight}}>The Item</View>
+        {/* <View style={{height: navigationBarHeight}}>The Item</View> */}
       </View>
     )
     return topBar
@@ -238,7 +248,7 @@ export default class Index extends Component {
 
   render () {
     const topBar = this.customTopBar()
-
+    // const pointerImg = require('/static/img/pointer.png')
     let wheel
     if (process.env.TARO_ENV === 'weapp') {
       console.log('weapp')
@@ -246,10 +256,17 @@ export default class Index extends Component {
         <View className='wheel'>
           <Canvas className='item' id='wheelcanvas' canvas-id='wheelcanvas'
             style={{ width: this.state.screenWidth * 2 + 'px',height: this.state.screenWidth * 2 + 'px' }}
-          />
-          <View onClick={this.draw.bind(this)} className='pointer start start-weapp' >
-            <View class='start-png'></View>
-          </View>
+          >
+            <CoverView className='start-wrap'>
+              <CoverView  onClick={this.draw.bind(this)} className='pointer start start-weapp' ></CoverView >
+              {/* <Image className='start-png' src='/static/img/pointer.png' mode='heightFix'
+                onClick={this.draw.bind(this)}
+              ></Image> */}
+              <CoverImage className='start-png' src='/static/img/pointer.png' mode='heightFix'
+                onClick={this.draw.bind(this)}
+              ></CoverImage>
+            </CoverView>
+          </Canvas>
         </View>
       )
     } else if (process.env.TARO_ENV === 'h5') {
@@ -274,15 +291,15 @@ export default class Index extends Component {
       <View className='index'>
        { topBar }
        { wheel }
-       <View className='chosen'>Chosen</View>
+       {/* <View className='chosen'>Chosen</View> */}
        <View className='update-button'>
-         <View class='update-title'>
+         {/* <View class='update-title'>
           <View class='text'>Click Here To Input Your Data</View>
-         </View>
+         </View> */}
          <View class='update-circle'>
            <View className='interior-circle circle'></View>
            <View className='external-circle circle'></View>
-           <View className='circle-click' onClick={this.openUpdate}>Click</View>
+           <View className='circle-click' onClick={this.openUpdate}>Update</View>
          </View>
        </View>
       </View>

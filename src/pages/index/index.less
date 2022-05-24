@@ -20,6 +20,7 @@
     top: 50%;
     left: 0;
     transform: translate(-50%,-55%);
+    border: 20PX solid #ffffff;
     path{ 
       fill: none; 
     }
@@ -27,14 +28,23 @@
       display: block;
       overflow: visible;
     }
+    &-wrap{
+      height: 100%;
+      width: 100%;;
+    }
     &-weapp{
       transform: translate(-50%,-50%);
-      .start-png{
-        height: 100%;
-        transform: translate(50%,50%);
-        background-size: contain;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='100%25' width='100%25' xmlns:xlink='http://www.w3.org/1999/xlink' style='display: block; overflow: visible;' view-box='0 0 100 100'%3E %3Cpath style='fill: none' d='M 0,70 a 50,50 0 1, 1 0, 1 z' id='circle1'%3E%3C/path%3E %3Ctext xml:space='preserve'%3E %3CtextPath xlink:href='%23circle1'%3E START START START %3C/textPath%3E %3C/text%3E %3C/svg%3E");
-      }
+      z-index: 1;
+    }
+    &-png{
+      position: absolute;
+      min-height: 220PX;
+      min-width: 157PX;
+      height: 220PX;
+      width: 157PX;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 999;
     }
   }
   img{
@@ -69,8 +79,8 @@
 // 波纹
 .update-circle{
   position: relative;
-  width: 100PX;
-  height: 100PX;
+  min-width: 120PX;
+  min-height: 120PX;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -79,8 +89,8 @@
     position: absolute;
     bottom: -50%;
     right: -50%;
-    width: 130PX;
-    height: 130PX;
+    min-width: 150PX;
+    min-height: 150PX;
     border: 2px solid #D12229;
     border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
     transition: 0.5s;
@@ -111,8 +121,53 @@
   }
   .circle-click{
     position: absolute;
-    bottom: 0;
-    font-size: 24PX;
-    right: 10PX;
+    bottom: 20PX;
+    font-size: 20PX;
+    right: 5PX;
   }
+}
+
+// wheel-input
+.award-list{
+}
+.award-item{
+  display: flex;
+  height: 200px;
+  text-align: center;
+  font-size: 110px;
+  line-height: 200px;
+  .award-input{
+    height: 100%;
+  }
+  .delete-slide{
+    width: 120PX;
+    min-width: 120PX;
+    font-size: 56px;
+    margin-right: -120PX;
+    color: #ffffff;
+    background-color: #D12229;
+  }
+  .input-with-delete{
+    margin-left: -120PX;
+  }
+  .delete-show{
+    margin-right: 0;
+  }
+}
+.add-item{
+  width: 100%;
+  justify-content: center;
+  color: #007940;
+}
+.comfirm-circle{
+  position: fixed;
+  right: 0;
+  bottom: 0;
+}
+.comfirm-click{
+  position: absolute;
+  font-size: 20PX;
+  padding-bottom: 20PX;
+  right: 5PX;
+  bottom: 0;
 }
