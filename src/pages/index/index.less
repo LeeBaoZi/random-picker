@@ -171,3 +171,71 @@
   right: 5PX;
   bottom: 0;
 }
+
+.route-button{
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 32px;
+  top: 40PX;
+  .update-title{
+    position: relative;
+    min-width: ~ 'calc(100% - 100PX)';
+    .text{
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  }
+}
+
+// 波纹
+.route-circle{
+  position: relative;
+  min-width: 120PX;
+  min-height: 120PX;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  .circle{
+    position: absolute;
+    right: -30%;
+    min-width: 90PX;
+    min-height: 90PX;
+    border: 2px solid #24408E;
+    border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+    transition: 0.5s;
+    animation: animate 6s linear infinite;
+  }
+  @keyframes animate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes animate2 {
+    0% {
+      transform: rotate(360deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+  .interior-circle{
+    animation: animate 6s linear infinite;
+  }
+  .interior-circle{
+    border: 2px solid #007940;
+    animation: animate2 10s linear infinite;
+  }
+  .circle-click{
+    position: absolute;
+    bottom: 50PX;
+    font-size: 16PX;
+    right: 5PX;
+  }
+}

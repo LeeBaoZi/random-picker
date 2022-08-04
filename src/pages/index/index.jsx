@@ -227,6 +227,13 @@ export default class Index extends Component {
     })
   }
 
+  // 导航
+  routeTo (url) {
+    Taro.navigateTo({
+      url,
+    })
+  }
+
   // 自定义导航
   customTopBar () {
     // 导航高度
@@ -248,7 +255,7 @@ export default class Index extends Component {
 
   render () {
     const topBar = this.customTopBar()
-    // const pointerImg = require('/static/img/pointer.png')
+    const pointerImg = require('../../static/img/pointer.png')
     let wheel
     if (process.env.TARO_ENV === 'weapp') {
       console.log('weapp')
@@ -262,7 +269,7 @@ export default class Index extends Component {
               {/* <Image className='start-png' src='/static/img/pointer.png' mode='heightFix'
                 onClick={this.draw.bind(this)}
               ></Image> */}
-              <CoverImage className='start-png' src='/static/img/pointer.png' mode='heightFix'
+              <CoverImage className='start-png' src={pointerImg}
                 onClick={this.draw.bind(this)}
               ></CoverImage>
             </CoverView>
@@ -289,10 +296,10 @@ export default class Index extends Component {
     }
     return (
       <View className='index'>
-       { topBar }
-       { wheel }
-       {/* <View className='chosen'>Chosen</View> */}
-       <View className='update-button'>
+        { topBar }
+        { wheel }
+        {/* <View className='chosen'>Chosen</View> */}
+        <View className='update-button'>
          {/* <View class='update-title'>
           <View class='text'>Click Here To Input Your Data</View>
          </View> */}
@@ -301,7 +308,14 @@ export default class Index extends Component {
            <View className='external-circle circle'></View>
            <View className='circle-click' onClick={this.openUpdate}>Update</View>
          </View>
-       </View>
+        </View>
+        <View className='route-button'>
+          <View class='route-circle'>
+            <View className='interior-circle circle'></View>
+            <View className='external-circle circle'></View>
+            <View className='circle-click' onClick={this.routeTo('/pages/dice/dice')}>DICE</View>
+          </View>
+        </View>
       </View>
     )
   }
