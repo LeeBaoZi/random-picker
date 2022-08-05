@@ -313,7 +313,7 @@ export default class Index extends Component {
           <View class='route-circle'>
             <View className='interior-circle circle'></View>
             <View className='external-circle circle'></View>
-            <View className='circle-click' onClick={this.routeTo('/pages/dice/dice')}>DICE</View>
+            <View className='circle-click' onClick={() => this.routeTo('/pages/dice/dice')}>DICE</View>
           </View>
         </View>
       </View>

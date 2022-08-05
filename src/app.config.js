@@ -18,8 +18,7 @@ export default defineAppConfig({
       root: 'pages/dice/',
       name: 'dic',
       pages: [
-        'dice',
-        'threeJS'
+        'dice'
       ],
       independent: true
     }
