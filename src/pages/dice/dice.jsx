@@ -1,15 +1,16 @@
 import { Component } from 'react'
-import anime from 'animejs/lib/anime.es.js';
-import { View, Canvas  } from '@tarojs/components'
+// import anime from 'animejs/lib/anime.es.js';
+import { View, Canvas, CoverView, Button  } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { OrbitControls } from '../../libs/OrbitControls'
 import * as THREE from '../../libs/three.weapp.min.js';
+import './dice.less'
 
 export default class Dice extends Component {
   constructor(props){
     super(props);
     this.state = {
-      timeRotateInterval: null,
+      dice: null,
       canvasId: ''
     }
   }
@@ -234,36 +235,57 @@ export default class Dice extends Component {
       renderer.render(scene, camera);
     })();
 
-    // const timeRotateInterval = setInterval(() => this.jump(dice), 600);
+    this.setState({dice: dice})
+
+    // const timeRotateInterval = setInterval(() => this.jump(dice), 100);
     // this.setState({timeRotateInterval: timeRotateInterval})
     // setTimeout (() => {
     //   clearInterval(this.state.timeRotateInterval)
-    // }, 1000)
+    // }, 100000)
     // // setInterval(() => this.jump(dice), 600);
     // this.jump(dice);
   }
+
+  clickToRotate () {
+    this.jump(this.state.dice)
+  }
   
 
-
   jump(dice) {
-    const props = {
-      rx: dice.rotation.x,
-      ry: dice.rotation.y,
-      rz: dice.rotation.z
-    };
-    anime({
-      targets: props,
-      rx: props.rx + 0.5 * Math.PI * (-8 + Math.round(Math.random() * 16)),
-      ry: props.ry + 0.5 * Math.PI * (-8 + Math.round(Math.random() * 16)),
-      rz: props.rz + 0.5 * Math.PI * (-8 + Math.round(Math.random() * 16)),
-      duration: 500,
-      easing: "easeInOutQuart",
-      update: function () {
-        dice.rotation.x = props.rx;
-        dice.rotation.y = props.ry;
-        dice.rotation.z = props.rz;
-      }
-    });
+    const lastStatus = 0.5 * Math.PI * (-8 + Math.round(Math.random() * 16))
+    
+    const timeRotateInterval = setInterval(() => {
+      dice.rotation.x += 1
+      dice.rotation.y += 1
+      dice.rotation.z += 1
+    }, 50)
+    setTimeout (() => {
+      clearInterval(timeRotateInterval)
+      dice.rotation.x = lastStatus
+      dice.rotation.y = lastStatus
+      dice.rotation.z = lastStatus
+    }, 5000)
+    // dice.rotation.x = dice.rotation.x + 0.5 * Math.PI * (-8 + Math.round(Math.random() * 16))
+    // dice.rotation.y = dice.rotation.y + 0.5 * Math.PI * (-8 + Math.round(Math.random() * 16))
+    // dice.rotation.z = dice.rotation.z + 0.5 * Math.PI * (-8 + Math.round(Math.random() * 16))
+    // const props = {
+    //   rx: dice.rotation.x,
+    //   ry: dice.rotation.y,
+    //   rz: dice.rotation.z
+    // };
+    // anime({
+    //   targets: props,
+    //   rx: props.rx + 0.5 * Math.PI * (-8 + Math.round(Math.random() * 16)),
+    //   ry: props.ry + 0.5 * Math.PI * (-8 + Math.round(Math.random() * 16)),
+    //   rz: props.rz + 0.5 * Math.PI * (-8 + Math.round(Math.random() * 16)),
+    //   duration: 500,
+    //   easing: "easeInOutQuart",
+    //   update: function () {
+    //     dice.rotation.x = props.rx;
+    //     dice.rotation.y = props.ry;
+    //     dice.rotation.z = props.rz;
+    //   }
+    // });
   }
 
   touchStart(e) {
@@ -283,11 +305,14 @@ export default class Dice extends Component {
     return (
       <View className='dice'>
         <Canvas type='webgl' className='canvas' id='canvas' canvas-id='canvas'
-          style={{ width: '100%',height: '600PX' }}
+          style={{ width: '100%', height: window.innerHeight + 'PX' }}
           onTouchstart={this.touchStart}
           onTouchMove={this.touchMove}
           onTouchEnd={this.touchEnd}
         ></Canvas>
+        <CoverView className='rotate'>
+          <Button size='mini' className='rotate-button'>Rotate</Button>
+        </CoverView>
       </View>
     )
   }
